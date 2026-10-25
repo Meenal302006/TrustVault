@@ -1,0 +1,30 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}TrustVault{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<a class="brand" href="{% url 'dashboard' %}"><span class="brand-icon">T</span><span>TrustVault<small>SECURE WORKSPACE</small></span></a>
+<nav>
+<a href="{% url 'dashboard' %}">▦ <span>Dashboard</span></a>
+<a href="{% url 'upload' %}">＋ <span>Upload document</span></a>
+<a href="{% url 'audit' %}">◷ <span>Audit trail</span></a>
+</nav>
+<div class="sidebar-note"><b>Privacy first</b><p>Your documents are private to your account.</p></div>
+</aside>
+<section class="main">
+<header class="topbar"><div><small>YOUR WORKSPACE</small><strong>Secure document management</strong></div>
+<div class="user">{% if request.user.is_authenticated %}<span class="avatar">{{ request.user.username|first|upper }}</span><span>{{ request.user.username }}<small>Signed in</small></span><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button">Sign out</button></form>{% endif %}</div></header>
+<main class="content">
+{% if messages %}{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}{% endif %}
+{% block content %}{% endblock %}
+</main>
+<footer>TrustVault · Private files. Clear accountability.</footer>
+</section>
+</div>
+</body></html>

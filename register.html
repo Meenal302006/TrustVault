@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Create account · TrustVault{% endblock %}
+{% block content %}
+<div class="auth-wrap"><div class="auth-card register-card"><div class="brand-icon large">T</div><p class="eyebrow">GET STARTED</p><h1>Create your account</h1><p class="muted">Set up your private TrustVault workspace.</p>
+<form method="post" novalidate>{% csrf_token %}
+{% if form.non_field_errors %}<div class="message error">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}<label>{{ field.label }}{{ field }}{% if field.help_text %}<span class="field-help">{{ field.help_text|safe }}</span>{% endif %}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</label>{% endfor %}
+<button class="button full" type="submit">Create account securely</button></form>
+<p class="hint">Already have an account? <a href="{% url 'login' %}">Sign in</a>.</p>
+</div></div>
+{% endblock %}

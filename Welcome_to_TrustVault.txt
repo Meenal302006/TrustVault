@@ -1,0 +1,13 @@
+WELCOME TO TRUSTVAULT — SAMPLE DOCUMENT
+
+Purpose:
+This sample file is included to help you test document upload and download.
+
+Suggested test:
+1. Sign in to TrustVault.
+2. Upload this file.
+3. Confirm it appears on your dashboard.
+4. Download it.
+5. Open the Audit trail and confirm upload/download events are listed.
+
+This is demonstration content only. Do not upload confidential documents to a demo deployment.

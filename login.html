@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Sign in · TrustVault{% endblock %}
+{% block content %}
+<div class="auth-wrap"><div class="auth-card"><div class="brand-icon large">T</div><p class="eyebrow">WELCOME BACK</p><h1>Sign in to TrustVault</h1><p class="muted">Access your secure document workspace.</p>
+<form method="post">{% csrf_token %}{% if form.errors %}<div class="message error">Username or password is incorrect.</div>{% endif %}
+<label>Username<input name="username" autocomplete="username" required autofocus></label>
+<label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+<button class="button full" type="submit">Sign in securely</button></form>
+<p class="hint">New to TrustVault? <a href="{% url 'register' %}">Create an account</a>.</p>
+</div></div>
+{% endblock %}

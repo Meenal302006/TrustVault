@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Audit trail · TrustVault{% endblock %}
+{% block content %}<div class="page-head"><div><p class="eyebrow">SECURITY & ACCOUNTABILITY</p><h1>Audit trail</h1><p class="muted">Recent document activity recorded for your account.</p></div></div>
+<section class="panel"><div class="panel-head"><div><h2>Recent events</h2><p>Uploads, downloads, edits, and permission changes appear here.</p></div></div>
+{% if events %}<div class="table-wrap"><table><thead><tr><th>ACTION</th><th>DOCUMENT</th><th>DETAILS</th><th>TIME</th></tr></thead><tbody>{% for event in events %}<tr><td><span class="event-pill">{{ event.action }}</span></td><td>{% if event.document %}{{ event.document.title }}{% else %}Document unavailable{% endif %}</td><td>{{ event.details|default:"—" }}</td><td>{{ event.created_at|date:"M j, Y · H:i" }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty"><div class="empty-symbol">◷</div><h3>No activity yet</h3><p>Upload or download a document and the event will appear here.</p></div>{% endif %}</section>
+{% endblock %}

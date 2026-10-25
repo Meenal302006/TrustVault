@@ -1,126 +1,68 @@
-# TrustVault
-TrustVault is a Django-based secure document-sharing platform that protects confidential files through private storage and server-side access control. Users can upload documents, share them with authorized users using READ and EDIT permissions, revoke access, and track document activities through an audit trail.
-# TrustVault — Secure Document Sharing
+# TrustVault — Secure Document Sharing with an Audit Trail
 
-## Overview
+TrustVault is a Django web application for private document storage, explicit per-document sharing, READ/EDIT permissions, revocation, and activity auditing. It is a hackathon development project; it has **not** undergone an independent security audit or production acceptance test.
 
-TrustVault is a Django-based secure document-sharing platform designed to protect confidential files through private storage, server-side access control, and activity logging. Users can upload documents, share them with authorized users, and manage permissions.
+## Implemented features
 
-## Features
+- User registration, login, and logout using Django authentication.
+- Private document upload (10 MB maximum; extension allowlist), owner-only by default.
+- Per-document sharing with registered usernames and READ or EDIT permission.
+- READ users can download but cannot change title metadata or manage shares.
+- EDIT users can download and change title metadata but cannot manage shares.
+- Owners can update or revoke grants. Access is checked server-side on each protected request.
+- Audit events for upload, download, title edit, grant, update, and revocation.
+- Documents are stored in `private_media/`, not exposed via a public media URL.
+- CSRF-protected state-changing forms, password validators, unique document/user share constraint, and basic security headers.
 
-- **User Authentication:** Register, log in, and log out securely.
-- **Private Document Storage:** Store uploaded files outside publicly accessible media URLs.
-- **Role-Based Access:** Owners can manage their documents and sharing permissions.
-- **READ Permission:** Authorized users can view or download shared documents.
-- **EDIT Permission:** Authorized users can download documents and edit permitted metadata.
-- **Access Revocation:** Owners can update or revoke sharing permissions.
-- **Audit Trail:** Record important actions, including uploads, downloads, edits, and permission changes.
-- **Security Controls:** CSRF protection, password validation, file-extension restrictions, and server-side permission checks.
+**Permission semantics:** EDIT means editing the document's title metadata only. It does not edit the binary contents of a PDF, Word file, image, or other uploaded file. Revocation blocks future server requests but cannot erase copies already downloaded by a recipient.
 
-## Technology Stack
+## Run locally (Windows PowerShell)
 
-- Python
-- Django
-- SQLite for local development
-- HTML and CSS
-- Django Authentication System
+From the folder containing `manage.py`:
 
-## Project Structure
-
-```text
-TrustVault/
-├── manage.py
-├── requirements.txt
-├── README.md
-├── THREATS.md
-├── PROMPTS.md
-├── trustvault/
-├── vault/
-├── templates/
-├── static/
-├── sample_documents/
-└── private_media/
-```
-
-## Installation and Setup
-
-### 1. Clone the repository
-
-```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd TrustVault_Starter
-```
-
-Replace the placeholder with your actual public repository URL.
-
-### 2. Create a virtual environment
-
-**Windows:**
-
-```bash
+```powershell
 py -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-### 3. Install dependencies
-
-```bash
+.\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-```
-
-### 4. Apply database migrations
-
-```bash
-python manage.py migrate
-```
-
-### 5. Run system checks and tests
-
-```bash
 python manage.py check
+python manage.py migrate
 python manage.py test
-```
-
-### 6. Start the development server
-
-```bash
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ in your browser.
+Open `http://127.0.0.1:8000/register/`, create two accounts, upload a document with the first account, and use **Share / Access** to grant READ or EDIT to the second account. Test revocation by trying the recipient's download URL after revoking access.
 
-## How to Use
+Optional administrator account:
 
-1. Register an account or log in.
-2. Upload a document.
-3. Share it with another registered user.
-4. Assign READ or EDIT permission.
-5. Review document activity in the audit trail.
-6. Update or revoke access when required.
+```powershell
+python manage.py createsuperuser
+```
 
-## Security Considerations
+## Tests
 
-- Document access must be verified on the server for every protected request.
-- Private files should not be served through publicly accessible URLs.
-- Revoking access prevents future authorized access but cannot delete copies already downloaded.
-- Audit logs provide accountability but are not guaranteed to be tamper-proof against database administrators or a compromised application.
-- Production deployment requires a strong secret key, HTTPS, appropriate allowed hosts, persistent private file storage, a production database, backups, and additional security testing.
+`vault/tests.py` covers basic access-denial, READ restrictions, EDIT metadata changes, owner grant/revoke, and non-owner share-management restrictions. Run `python manage.py test` before submission. Do not claim tests passed unless you ran them and observed success.
 
-## AI Usage Transparency
+## Deployment checklist
 
-AI-assisted development should be documented honestly in `PROMPTS.md`, including prompts, generated suggestions, errors discovered, corrections made, and relevant commit references.
+1. Use a managed production database and private file storage with restricted filesystem/object-storage permissions.
+2. Set a unique, strong `DJANGO_SECRET_KEY`; never commit secrets.
+3. Set `DJANGO_DEBUG=0` and `DJANGO_ALLOWED_HOSTS` to the exact deployed hostname(s), comma-separated.
+4. Serve over HTTPS. If your host terminates TLS, set `DJANGO_SECURE_SSL_REDIRECT=0` only when the host already enforces HTTPS correctly.
+5. Run `python manage.py migrate` and `python manage.py collectstatic` during deployment; configure static-file serving.
+6. Do not expose `private_media/` through a public static/media URL or reverse-proxy alias.
+7. Back up the database and private files; set quotas and monitor storage.
+8. Add malware scanning and content-based file validation before accepting untrusted public uploads. Extension checks are not sufficient to prove a file is safe.
+9. Consider rate limiting, account verification, password reset, and monitoring before real-world use.
 
-## Project Documentation
+## Audit limitations
 
-- `README.md` — Setup, features, and usage.
-- `THREATS.md` — Security threats and mitigations.
-- `PROMPTS.md` — AI-assisted development log.
+Audit entries are read-only in Django admin, but a database administrator or compromised application process could still alter them. For stronger tamper evidence, use a remote append-only log, restricted database roles, or a verified hash chain and alerting. Audit details should not contain secrets or document contents.
 
-## Limitations
+## Hackathon documentation
 
-This project is a security-focused prototype and should not be considered independently audited or production-secure without further testing and deployment hardening.
+- `THREATS.md` describes threats and testable mitigations.
+- `PROMPTS.md` is a working log template. Update it as you actually work, with dates, prompts, observed results, corrections, and commit links. The example starting entries are based on the work documented in this conversation; add actual commit hashes and test outcomes rather than inventing them.
 
-## License
+## Scope and honesty
 
-Add a license file if you intend to distribute this project under a specific open-source license.
-3
+This is a working development baseline, not a security certification. The test suite must be executed in the target environment, and deployment must be verified from an unauthenticated browser before submission. Keep the README accurate to the code that is actually deployed.

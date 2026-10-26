@@ -3,16 +3,11 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-this-key-before-deployment")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "trust-vault-qr47cabg4-meenal302006.vercel.app",
-]
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "trust-vault-qr47cabg4-meenal302006.vercel.app",
+    ".vercel.app",
 ]
 
 ALLOWED_HOSTS += [

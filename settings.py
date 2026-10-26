@@ -3,9 +3,23 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-this-key-before-deployment")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"] if DEBUG else [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
-if not DEBUG and (not os.environ.get("DJANGO_SECRET_KEY") or "dev-only" in os.environ.get("DJANGO_SECRET_KEY", "")):
-    raise RuntimeError("Set a strong DJANGO_SECRET_KEY before running with DJANGO_DEBUG=0.")
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "trust-vault-qr47cabg4-meenal302006.vercel.app",
+]
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "trust-vault-qr47cabg4-meenal302006.vercel.app",
+]
+
+ALLOWED_HOSTS += [
+    h.strip()
+    for h in os.environ.get("ALLOWED_HOSTS", "").split(",")
+    if h.strip()
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
